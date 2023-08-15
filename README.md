@@ -19,13 +19,19 @@
   </p>
 </p>
 
+## Features
+
+
 ## Table of Contents
 
 * [Requirements](#requirements)
 * [Installation](#installation)
 * [Databases](#databases)
+    * [Shell](#Shell)
     * [Migrations](#Migrations)
     * [Downgrade Migration](#Downgrade-Migration)
+* [Folder Structure](#folder-structure)
+* [Makefile Commands](#makefile-commands)
 * [Contributing](#contributing)
 
 ## Requirements
@@ -109,6 +115,16 @@
 
 ## Databases
 
+### Shell
+
+To access the database shell, run this command
+
+```bash
+python -i shell.py
+```
+
+The `shell.py` script will be loaded including the database session and models.
+
 ### Migrations
 
 To do a database migration, follow the steps below.
@@ -148,6 +164,55 @@ Run this command to revert every migration back to the beginning.
 
 ```bash
 alembic downgrade base
+```
+
+## Project Structure
+
+```
+📄 main.py                  - Server entry point
+📁 .github/                 - Github specific files
+📁 app/                     - Application code
+   ├── 📁 api               - API endpoints
+   ├── 📁 auth              - Authentication
+   ├── 📁 cache             - Redis code and caching functions
+   ├── 📁 core              - Core configuration
+   ├── 📁 db                - Database connection
+   ├── 📁 lmbd              - Holds AWS lambda functions
+   ├── 📁 migrations        - Database migrations
+   ├── 📁 models            - Database ORM models
+   ├── 📁 types             - Type definitions
+   └── 📁 util              - Helper functions
+```
+
+## Makefile Commands
+
+Make files are used to run common commands. You can find the list of commands in the `Makefile` file.
+To use these commands, first copy `make-env-example.sh` to `make-env.sh` and update the values.
+
+```bash
+# macOS
+cp make-env-example.sh make-env.sh
+
+# windows (powershell)
+copy make-env-example.sh make-env.sh
+```
+
+Remember to make the file executable
+
+```bash
+chmod +x make-env.sh
+```
+
+Then you can run the commands like this
+
+```bash
+./make-env.sh <command>
+```
+
+Try it with the help command, which will list all the available commands.
+
+```bash
+./make-env.sh help
 ```
 
 ## Contributing
