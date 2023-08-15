@@ -7,20 +7,20 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-requests = "^2.29.0"
-redis = "^4.5.4"
-boto3 = "^1.26.125"
-uvicorn = "^0.22.0"
-pydantic = "^1.10.7"
-alembic = "^1.10.4"
-python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+requests = "^2.31.0"
+redis = "^5.0.0"
+boto3 = "^1.28.26"
+uvicorn = "^0.23.2"
+pydantic = "^2.1.1"
+alembic = "^1.11.2"
 python-dotenv = "^1.0.0"
-pymysql = "^1.0.3"
-orjson = "^3.8.11"
-psycopg = "^3.1.9"
-sqlalchemy = "^2.0.12"
-prometheus-fastapi-instrumentator = "^6.0.0"
-gunicorn = "^20.1.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+pymysql = "^1.1.0"
+orjson = "^3.9.4"
+psycopg = "^3.1.10"
+sqlalchemy = "^2.0.19"
+prometheus-fastapi-instrumentator = "^6.1.0"
+gunicorn = "^21.2.0"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.2"
