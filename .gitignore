@@ -1,0 +1,58 @@
+# Compiled source code files
+__pycache__/
+*.c
+*.so
+*.dll
+*.pyd
+*.exe
+*.pyc
+compiled/
+
+# Build and environment files
+build/
+env/
+.venv/
+.docker/
+docker/
+make-env.sh
+
+# Configuration and environment variable files
+.env
+.env.prod
+.env.production
+.env.dev
+.env.development
+.env.staging
+.env.stage
+.env.test
+.env.testing
+.env.local
+
+# Logs and temporary files
+*.log
+logs/
+.ruff_cache/
+.cache/
+.mypy_cache/
+
+# Package and archive files
+*.zip
+*.7zip
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+
+# IDE and editor specific files
+!.vscode/settings.json
+.DS_STORE
+
+# Test files
+test.py
+test.json
+
+# Specific includes and excludes
+*.txt
+!requirements.txt
+chromedriver*

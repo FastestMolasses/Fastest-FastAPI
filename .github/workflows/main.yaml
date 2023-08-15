@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+
+    - name: Install linter
+      run: |
+        python -m pip install --upgrade pip
+        pip install ruff
+
+    - name: Linting code
+      run: |
+        ruff .
+
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+
+    - name: Install type checker
+      run: |
+        python -m pip install --upgrade pip
+        pip install mypy
+
+    - name: Type checking code
+      run: |
+        mypy . --explicit-package-bases

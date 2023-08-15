@@ -1,0 +1,19 @@
+services:
+  mysql-server:
+    image: mysql/mysql-server:latest
+    container_name: fastapi-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "fastapi-db"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "root"
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./docker/mysql:/var/lib/mysql"
+
+  redis-server:
+    image: redis:latest
+    container_name: fastapi-redis
+    ports:
+      - "6379:6379"

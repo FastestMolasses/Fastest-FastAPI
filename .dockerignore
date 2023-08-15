@@ -1,0 +1,63 @@
+# Version control system files
+.git
+.gitignore
+
+# Logs and temporary files
+*.log
+logs/
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# Virtual environment and dependency files
+env/
+.venv/
+
+# Environment configuration files
+.env.prod
+.env.production
+.env.dev
+.env.development
+.env.staging
+.env.stage
+.env.test
+.env.testing
+.env.local
+.env.example
+
+# Build and setup scripts
+make-env-example.sh
+make-env.sh
+
+# Test files and directories
+test.py
+test.json
+tests/
+
+# IDE and editor specific files
+.vscode/
+
+# GitHub workflow and contribution files
+.github/
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Documentation and license files
+README.md
+LICENSE
+
+# Docker Compose file (if not needed in build context)
+docker-compose.yml
+
+# Package and archive files
+*.zip
+*.7zip
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+
+# Other
+.DS_STORE

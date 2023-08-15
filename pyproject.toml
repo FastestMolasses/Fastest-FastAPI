@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "fastapi-base"
+version = "0.1.0"
+description = ""
+authors = ["Abe M <abe.malla8@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.29.0"
+redis = "^4.5.4"
+boto3 = "^1.26.125"
+uvicorn = "^0.22.0"
+pydantic = "^1.10.7"
+alembic = "^1.10.4"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-dotenv = "^1.0.0"
+pymysql = "^1.0.3"
+orjson = "^3.8.11"
+psycopg = "^3.1.9"
+sqlalchemy = "^2.0.12"
+prometheus-fastapi-instrumentator = "^6.0.0"
+gunicorn = "^20.1.0"
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.2"
+mypy = "^1.2.0"
+types-redis = "^4.5.4.1"
+ruff = "^0.0.264"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".pytest_cache"]
+ignore-init-module-imports = true
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.ruff.per-file-ignores]
+"main.py" = ["E402"]
+"shell.py" = ["F401"]

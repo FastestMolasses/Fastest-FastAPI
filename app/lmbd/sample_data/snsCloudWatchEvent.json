@@ -1,0 +1,60 @@
+{
+    "Records": [
+        {
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:EXAMPLE",
+            "EventSource": "aws:sns",
+            "Sns": {
+                "SignatureVersion": "1",
+                "Timestamp": "1970-01-01T00:00:00.000Z",
+                "Signature": "EXAMPLE",
+                "SigningCertUrl": "EXAMPLE",
+                "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+                "Message": {
+                    "AlarmName": "Saffron-Octopus-RDS",
+                    "AlarmDescription": null,
+                    "AWSAccountId": "498849832712",
+                    "NewStateValue": "ALARM",
+                    "NewStateReason": "Threshold Crossed: 1 datapoint [2.1533759377604764 (20/07/20 21: 07: 00)] was greater than or equal to the threshold (0.0175).",
+                    "StateChangeTime": "2020-07-20T21: 12: 01.544+0000",
+                    "Region": "US East (N. Virginia)",
+                    "AlarmArn": "arn:aws:cloudwatch:us-east-1: 498849832712:alarm:Saffron-Octopus-RDS",
+                    "OldStateValue": "INSUFFICIENT_DATA",
+                    "Trigger": {
+                        "MetricName": "CPUUtilization",
+                        "Namespace": "AWS/RDS",
+                        "StatisticType": "Statistic",
+                        "Statistic": "AVERAGE",
+                        "Unit": null,
+                        "Dimensions": [
+                            {
+                                "value": "sm16lm1jrrjf0rk",
+                                "name": "DBInstanceIdentifier"
+                            }
+                        ],
+                        "Period": 300,
+                        "EvaluationPeriods": 1,
+                        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+                        "Threshold": 0.0175,
+                        "TreatMissingData": "",
+                        "EvaluateLowSampleCountPercentile": ""
+                    }
+                },
+                "MessageAttributes": {
+                    "Test": {
+                        "Type": "String",
+                        "Value": "TestString"
+                    },
+                    "TestBinary": {
+                        "Type": "Binary",
+                        "Value": "TestBinary"
+                    }
+                },
+                "Type": "Notification",
+                "UnsubscribeUrl": "EXAMPLE",
+                "TopicArn": "arn:aws:sns:EXAMPLE",
+                "Subject": "TestInvoke"
+            }
+        }
+    ]
+}
