@@ -8,7 +8,7 @@
   </div>
 
   <p align="center">
-    A fully setup Python web server focused on speed and type safety.
+    A fully setup Python web server focused on performance and type safety.
     <br />
     Built with FastAPI, Pydantic, Ruff, and MyPy.
     <br />
@@ -21,14 +21,23 @@
 
 ## Table of Contents
 
+* [Requirements](#requirements)
 * [Installation](#installation)
 * [Databases](#databases)
     * [Migrations](#Migrations)
     * [Downgrade Migration](#Downgrade-Migration)
+* [Contributing](#contributing)
+
+## Requirements
+
+* [Python 3.11+](https://www.python.org/downloads/)
+* [Docker](https://www.docker.com/get-started/)
 
 ## Installation
 
-1. Install depedenencies
+1. Fork this repo ([How to create a private fork](https://gist.github.com/0xjac/85097472043b697ab57ba1b1c7530274))
+
+2. Install depedenencies
 
     Poetry
     ```bash
@@ -40,7 +49,7 @@
     pip install -r requirements.txt
     ```
 
-2. Enter the environment if you haven't already
+3. Enter the environment if you haven't already
 
     Poetry
     ```bash
@@ -63,15 +72,15 @@
     .\env\Scripts\activate.ps1
     ```
 
-3. Install [Docker](https://www.docker.com/get-started/)
+4. Install [Docker](https://www.docker.com/get-started/)
 
-4. Start your Docker services
+5. Start your Docker services
 
     ```bash
     docker-compose up
     ```
 
-5. Clone `.env.example` to `.env` and update the values
+6. Clone `.env.example` to `.env` and update the values
 
     ```bash
     # macOS
@@ -86,7 +95,7 @@
     openssl rand -hex 128
     ```
 
-5. Run the server
+7. Run the server
 
     For development. Will use (.env.dev)
     ```bash
@@ -140,3 +149,12 @@ Run this command to revert every migration back to the beginning.
 ```bash
 alembic downgrade base
 ```
+
+## Contributing
+
+1. **Fork the Repository**: Start by forking the repository to your own GitHub account.
+2. **Clone the Forked Repository**: Clone the fork to your local machine.
+3. **Create a New Branch**: Always create a new branch for your changes.
+4. **Make Your Changes**: Implement your changes.
+5. **Run Tests**: Make sure to test your changes locally.
+6. **Submit a Pull Request**: Commit and push your changes, then create a pull request against the main branch.
