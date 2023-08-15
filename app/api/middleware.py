@@ -41,6 +41,7 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
             return response
 
         except Exception as e:
+            # TODO: SEND NOTIFICATION HERE
             response = ServerResponse(
                 status='error', message=str(e))
             return ORJSONResponse(response.dict(), status_code=400)

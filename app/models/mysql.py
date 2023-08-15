@@ -3,7 +3,7 @@ from app.db.connection import MySQLTableBase
 
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.mysql import BIGINT
-from sqlalchemy import String, ForeignKey, DateTime
+from sqlalchemy import String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 

@@ -10,3 +10,5 @@ export DOCKER_IMAGE_NAME=
 export CONTAINER_NAME=
 export ECS_CLUSTER_NAME=
 export ECS_SERVICE_NAME=
+
+make "$@"
