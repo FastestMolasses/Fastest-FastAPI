@@ -1,7 +1,8 @@
 import os
 
 from typing import Any
-from pydantic import AnyHttpUrl, BaseSettings, validator
+from pydantic import AnyHttpUrl, validator
+from pydantic_settings import BaseSettings
 
 
 class EnvConfigSettings(BaseSettings):
