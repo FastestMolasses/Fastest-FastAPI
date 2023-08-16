@@ -1,5 +1,5 @@
 <p align="center">
-  <h2 align="center">⚡️ Fast Python Server</h3>
+  <h1 align="center">⚡️ Fast Python Server Template</h1>
 
   <div align="center">
 
@@ -8,7 +8,7 @@
   </div>
 
   <p align="center">
-    A fully setup Python web server focused on performance and type safety.
+    A production ready Python web server template focused on performance and type safety.
     <br />
     Built with FastAPI, Pydantic, Ruff, and MyPy.
     <br />
@@ -21,6 +21,16 @@
 
 ## Features
 
+* ⚡ Async and type safety by default
+* 🛠️ CI/CD and tooling setup
+* 🚀 High performance libraries integrated
+* 🐳 Dockerized and includes AWS deployment flow
+* 🗃️ Database migrations
+* 🔐 JWT authentication
+* 🌐 AWS Lambda functions support
+* 🧩 Modularized features
+* 📊 Prometheus metrics
+* 📜 Makefile commands
 
 ## Table of Contents
 
