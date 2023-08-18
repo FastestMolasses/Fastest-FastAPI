@@ -47,7 +47,7 @@ class EnvConfigSettings(BaseSettings):
 
     class Config:
         case_sensitive = True
-        env_file = '.env' if os.getenv('PROD') else '.env.dev'
+        env_file = '.env'
 
 
 settings = EnvConfigSettings()  # type: ignore

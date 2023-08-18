@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">⚡️ Fast Python Server Template</h1>
+  <h1 align="center">⚡️ Fastest FastAPI</h1>
 
   <div align="center">
 
@@ -8,10 +8,10 @@
   </div>
 
   <p align="center">
-    A production ready Python web server template focused on performance and type safety.
+    A production-ready FastAPI server template, emphasizing performance and type safety. It includes a configurable set of features and options, allowing customization to retain or exclude components.
+    <br />
     <br />
     Built with FastAPI, Pydantic, Ruff, and MyPy.
-    <br />
     <br />
     <a href="https://github.com/FastestMolasses/Fast-Python-Server-Template/issues">Report Bug</a>
     ·
@@ -25,8 +25,8 @@
 * 🛠️ CI/CD and tooling setup
 * 🚀 High performance libraries integrated
 * 🐳 Dockerized and includes AWS deployment flow
-* 🗃️ Database migrations
-* 🔐 JWT authentication
+* 🗃️ Several database implementations (MySQL, Postgres, Timescale) & migrations
+* 🔐 JWT authentication and authorization
 * 🌐 AWS Lambda functions support
 * 🧩 Modularized features
 * 📊 Prometheus metrics
@@ -93,7 +93,7 @@
 5. Start your Docker services
 
     ```bash
-    docker-compose up
+    docker compose up
     ```
 
 6. Clone `.env.example` to `.env` and update the values
@@ -122,6 +122,19 @@
     ```
     PROD=1 uvicorn main:server --reload
     ```
+
+## Setting Up the Environment
+This project uses environment-specific configuration files and symbolic links to manage different environments such as development, production, and staging. Follow the steps below for your operating system to set up the desired environment.
+
+```bash
+# macOS, linux
+ln -s <TARGET>.env .env
+# example: ln -s prod.env .env
+
+# windows
+mklink .env <TARGET>.env
+# example: mklink .env prod.env
+```
 
 ## Databases
 
@@ -183,10 +196,10 @@ alembic downgrade base
 📁 .github/                 - Github specific files
 📁 app/                     - Application code
    ├── 📁 api               - API endpoints
-   ├── 📁 auth              - Authentication
+   ├── 📁 auth              - Authentication / authorization
    ├── 📁 cache             - Redis code and caching functions
    ├── 📁 core              - Core configuration
-   ├── 📁 db                - Database connection
+   ├── 📁 db                - Database connections
    ├── 📁 lmbd              - Holds AWS lambda functions
    ├── 📁 migrations        - Database migrations
    ├── 📁 models            - Database ORM models

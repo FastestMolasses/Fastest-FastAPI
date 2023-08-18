@@ -27,6 +27,15 @@ make-env.sh
 .env.test
 .env.testing
 .env.local
+*prod.env
+*production.env
+*dev.env
+*development.env
+*staging.env
+*stage.env
+*test.env
+*testing.env
+*local.env
 
 # Logs and temporary files
 *.log
