@@ -2,6 +2,7 @@
 # PROD=1 uvicorn main:server --reload
 import app.models.mysql
 import app.db.connection
+import app.api.middleware as middleware
 
 from fastapi import FastAPI
 from app.api.router import apiRouter
@@ -10,7 +11,6 @@ from app.types.server import ServerResponse
 from fastapi.responses import ORJSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
-from app.api.middleware import DBExceptionsMiddleware, CatchAllMiddleware
 
 server = FastAPI(
     title='fastapi-server',
@@ -39,8 +39,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=['*'],
     )
 
-server.add_middleware(DBExceptionsMiddleware)
-server.add_middleware(CatchAllMiddleware)
+server.add_middleware(middleware.DBExceptionsMiddleware)
+server.add_middleware(middleware.CatchAllMiddleware)
+server.add_middleware(middleware.ProfilingMiddleware)
 
 
 @server.get('/')

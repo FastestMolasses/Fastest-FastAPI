@@ -1,5 +1,3 @@
-import os
-
 from typing import Any
 from pydantic import AnyHttpUrl, validator
 from pydantic_settings import BaseSettings
@@ -13,6 +11,7 @@ class EnvConfigSettings(BaseSettings):
     API_V1_STR: str = '/api/v1'
     SECRET_KEY: str
     REFRESH_KEY: str
+    PROFILING: bool = False
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # 30 minutes
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # 3 days
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []

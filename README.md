@@ -23,7 +23,8 @@
 
 * ⚡ Async and type safety by default
 * 🛠️ CI/CD and tooling setup
-* 🚀 High performance libraries integrated
+* 🚀 High performance libraries integrated ([orjson](https://github.com/ijl/orjson), [uvloop](https://github.com/MagicStack/uvloop), [pydantic2](https://github.com/pydantic/pydantic))
+* 📝 [Loguru](https://github.com/Delgan/loguru) + [picologging](https://github.com/microsoft/picologging) for simplified and performant logging
 * 🐳 Dockerized and includes AWS deployment flow
 * 🗃️ Several database implementations (MySQL, Postgres, Timescale) & migrations
 * 🔐 JWT authentication and authorization
@@ -31,6 +32,7 @@
 * 🧩 Modularized features
 * 📊 Prometheus metrics
 * 📜 Makefile commands
+* 🗺️ Route profiling
 
 ## Table of Contents
 

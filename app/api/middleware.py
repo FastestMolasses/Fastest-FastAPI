@@ -1,5 +1,7 @@
 from typing import Callable
 from fastapi import Request
+from pyinstrument import Profiler
+from app.core.config import settings
 from sqlalchemy.exc import IntegrityError
 from app.types.server import ServerResponse
 from fastapi.responses import ORJSONResponse
@@ -45,3 +47,21 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
             response = ServerResponse(
                 status='error', message=str(e))
             return ORJSONResponse(response.dict(), status_code=400)
+
+
+class ProfilingMiddleware(BaseHTTPMiddleware):
+    """
+        Middleware to catch errors.
+    """
+    async def dispatch(self, request: Request, call_next: Callable):
+        if settings.PROFILING:
+            # profiler = Profiler(interval=settings.profiling_interval, async_mode='enabled')
+
+            # profiler.start()
+            # response = await call_next(request)
+            # profiler.stop()
+
+            # return response
+            return await call_next(request)
+        else:
+            return await call_next(request)
