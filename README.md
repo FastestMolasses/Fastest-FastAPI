@@ -110,7 +110,11 @@
 
     You can use this command to generate secret keys
     ```bash
+    # macOS
     openssl rand -hex 128
+
+    # windows (powershell)
+    $bytes = New-Object byte[] 128; (New-Object Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes); [System.BitConverter]::ToString($bytes) -Replace '-'
     ```
 
 7. Run the server
