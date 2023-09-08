@@ -26,7 +26,7 @@
 * 🚀 High performance libraries integrated ([orjson](https://github.com/ijl/orjson), [uvloop](https://github.com/MagicStack/uvloop), [pydantic2](https://github.com/pydantic/pydantic))
 * 📝 [Loguru](https://github.com/Delgan/loguru) + [picologging](https://github.com/microsoft/picologging) for simplified and performant logging
 * 🐳 Dockerized and includes AWS deployment flow
-* 🗃️ Several database implementations (MySQL, Postgres, Timescale) & migrations
+* 🗃️ Several database implementations with sample ORM models (MySQL, Postgres, Timescale) & migrations
 * 🔐 JWT authentication and authorization
 * 🌐 AWS Lambda functions support
 * 🧩 Modularized features
@@ -128,6 +128,22 @@
     ```
     PROD=1 uvicorn main:server --reload
     ```
+
+## Upgrading Dependencies
+
+Make sure that Poetry has this `poetry-plugin-up` plugin installed.
+
+```bash
+poetry self add poetry-plugin-up
+```
+
+Then you can update the latest versions of the dependencies by running this command.
+
+```bash
+poetry up
+```
+
+[More info](https://github.com/MousaZeidBaker/poetry-plugin-up)
 
 ## Setting Up the Environment
 This project uses environment-specific configuration files and symbolic links to manage different environments such as development, production, and staging. Follow the steps below for your operating system to set up the desired environment.
