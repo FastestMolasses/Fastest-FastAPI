@@ -1,5 +1,5 @@
 from enum import Enum, IntEnum
-from pydantic.generics import GenericModel
+from pydantic import BaseModel
 from typing import Generic, TypeVar, Optional, Any, Literal
 
 DataT = TypeVar('DataT')
@@ -22,7 +22,7 @@ class Cookie(Enum):
     REFRESH_TOKEN = 'refresh_token'
 
 
-class ServerResponse(GenericModel, Generic[DataT]):
+class ServerResponse(BaseModel, Generic[DataT]):
     data: Optional[DataT] = None
     status: ServerStatus = 'ok'
     message: Optional[str] = None

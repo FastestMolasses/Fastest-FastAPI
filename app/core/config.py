@@ -1,6 +1,6 @@
 from typing import Any
-from pydantic import AnyHttpUrl, validator
 from pydantic_settings import BaseSettings
+from pydantic import AnyHttpUrl, validator, Extra
 
 
 class EnvConfigSettings(BaseSettings):
@@ -29,7 +29,7 @@ class EnvConfigSettings(BaseSettings):
     MYSQL_USER: str
     MYSQL_PASSWORD: str
     MYSQL_DATABASE: str
-    MYSQL_DATABASE_URI: str | None
+    MYSQL_DATABASE_URI: str | None = None
     MYSQL_SSL: str
 
     @validator('MYSQL_DATABASE_URI', pre=True)
@@ -47,6 +47,7 @@ class EnvConfigSettings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = '.env'
+        extra = Extra.ignore
 
 
-settings = EnvConfigSettings()  # type: ignore
+settings = EnvConfigSettings(**{})
