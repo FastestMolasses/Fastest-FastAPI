@@ -1,4 +1,4 @@
-from enum import Enum, IntEnum
+from enum import IntEnum
 from pydantic import BaseModel
 from typing import Generic, TypeVar, Optional, Any, Literal
 
@@ -18,7 +18,8 @@ class ServerCode(IntEnum):
     INTERNAL_SERVER_ERROR = 500
 
 
-class Cookie(Enum):
+# Not an enum because it's not a finite set of values
+class Cookie:
     REFRESH_TOKEN = 'refresh_token'
 
 
