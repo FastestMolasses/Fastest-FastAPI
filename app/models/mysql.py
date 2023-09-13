@@ -80,7 +80,7 @@ class Notification(MySQLTableBase):
 
 class Post(MySQLTableBase):
     """
-    Post class representing the posts created by the users.
+        Post class representing the posts created by the users.
     """
     __tablename__ = 'Post'
 
@@ -102,7 +102,7 @@ class Post(MySQLTableBase):
 
 class Profile(MySQLTableBase):
     """
-    Profile class representing the profile of each user.
+        Profile class representing the profile of each user.
     """
     __tablename__ = 'Profile'
 
