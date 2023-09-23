@@ -2,7 +2,7 @@ from jose import jwt
 from sqlalchemy.orm import Session
 from fastapi.security import HTTPBearer
 from datetime import datetime, timedelta
-from fastapi import Request, HTTPException, Depends
+from fastapi import Request, HTTPException
 from jose.exceptions import JWTClaimsError, JWTError, ExpiredSignatureError
 
 from app.models.mysql import User
@@ -12,14 +12,13 @@ from app.util.common import generateNonce
 
 from app.types.server import Cookie
 from app.types.cache import UserKey
-from app.types.jwt import TokenData, JWTPayload, Role
+from app.types.jwt import TokenData, JWTPayload
 
 ALGORITHM = 'HS256'
 
 
 def create_jwt(data: TokenData,
                session: Session | None = None,
-               userRole: Role | None = None,
                userID: int | None = None) -> tuple[str, str]:
     """
         Create a JWT token that expires in 30 min. If a user role is provided, the token will be
@@ -30,11 +29,8 @@ def create_jwt(data: TokenData,
         Raises:
             JWTError: If there is an error encoding the claims.
     """
-    if not session and userRole is None:
-        raise JWTError('User role not provided.')
-
     # If no user info was provided, we need to query it
-    if session and userRole is None and userID is None:
+    if session and userID is None:
         # Query the database to get the user's role. Create a new user if needed.
         user: User | None = session.query(
             User).filter_by(address=data.sub).first()
@@ -42,10 +38,9 @@ def create_jwt(data: TokenData,
             user = User(address=data.sub)
             session.add(user)
             session.commit()
-        userRole = Role(user.role)
         userID = user.id
 
-    if userRole is None or userID is None:
+    if userID is None:
         raise JWTError('Could not get user info.')
 
     nonce = generateNonce()
@@ -54,11 +49,10 @@ def create_jwt(data: TokenData,
     payload = JWTPayload(
         exp=datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
         id=userID,
-        role=userRole,
         nonce=nonce,
         iat=datetime.utcnow(),
-        **data.dict(),
-    ).dict()
+        **data.model_dump(),
+    ).model_dump()
     accessToken = jwt.encode(payload, settings.SECRET_KEY, algorithm=ALGORITHM)
 
     # Create the refresh token
@@ -145,21 +139,3 @@ def _nonceInCache(address: str, nonce: str) -> bool:
     """
     cache = SessionStore(address)
     return cache.get(UserKey.NONCE) == nonce
-
-
-class RequireRole:
-    """
-        Custom FastAPI dependency for JWT authentication.
-        Returns a User object that is filled with the data from
-        the jwt payload. The rest of the fields can be loaded by
-        calling the load() method.
-    """
-
-    def __init__(self, role: Role):
-        self.role = role
-
-    async def __call__(self, payload: JWTPayload = Depends(RequireJWT())) -> User:
-        if payload.role > self.role:
-            raise HTTPException(status_code=403)
-        user = User(id=payload.id, address=payload.sub, role=payload.role)
-        return user

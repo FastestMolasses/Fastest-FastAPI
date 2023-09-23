@@ -16,8 +16,8 @@ else:
     # It's very important to acquire logger locks before handlers one to prevent possible deadlock
     # while 'remove()' is called for example.
 
-    logger_locks = weakref.WeakSet()
-    handler_locks = weakref.WeakSet()
+    logger_locks = weakref.WeakSet()  # type: ignore
+    handler_locks = weakref.WeakSet()  # type: ignore
 
     def acquire_locks():
         for lock in logger_locks:

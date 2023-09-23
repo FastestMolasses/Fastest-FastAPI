@@ -1,6 +1,6 @@
 from typing import Callable
 from fastapi import Request
-from pyinstrument import Profiler
+# from pyinstrument import Profiler
 from app.core.config import settings
 from sqlalchemy.exc import IntegrityError
 from app.types.server import ServerResponse

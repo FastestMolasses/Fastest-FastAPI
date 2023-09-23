@@ -127,7 +127,8 @@ class DiscordOAuthClient:
         scopes = f'scope={self.scopes}'
         response_type = 'response_type=code'
         state = f'&state={state}' if state else ''
-        return f'{DISCORD_OAUTH_AUTHENTICATION_URL}?{client_id}&{redirect_uri}&{scopes}&{response_type}{state}'
+        return f'{DISCORD_OAUTH_AUTHENTICATION_URL}?{client_id}&{redirect_uri}&{scopes}' + \
+            f'&{response_type}{state}'
 
     oauth_login_url = property(get_oauth_login_url)
 
@@ -214,11 +215,11 @@ class DiscordOAuthClient:
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
             raise Unauthorized
-        authorization_header = authorization_header.split(' ')
-        if not authorization_header[0] == 'Bearer' or len(authorization_header) > 2:
+        all_headers = authorization_header.split(' ')
+        if not all_headers[0] == 'Bearer' or len(all_headers) > 2:
             raise Unauthorized
 
-        token = authorization_header[1]
+        token = all_headers[1]
         return token
 
     async def isAuthenticated(self, token: str):
@@ -229,7 +230,7 @@ class DiscordOAuthClient:
         except Unauthorized:
             return False
 
-    async def requires_authorization(self, bearer: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer())):
+    async def requires_authorization(self, bearer: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer())):  # noqa: E501
         if bearer is None:
             raise Unauthorized
         if not await self.isAuthenticated(bearer.credentials):

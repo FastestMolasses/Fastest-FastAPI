@@ -1,13 +1,5 @@
-from enum import IntEnum
 from datetime import datetime
 from pydantic import BaseModel
-
-
-class Role(IntEnum):
-    SUPER = 1
-    ADMIN = 2
-    SUBSCRIBER = 3
-    USER = 4
 
 
 class JWTPayload(BaseModel):
@@ -20,8 +12,6 @@ class JWTPayload(BaseModel):
     exp: datetime
     # Issued at
     iat: datetime
-    # Authorization role
-    role: Role
     # Unique hex number
     nonce: str
     # User ID

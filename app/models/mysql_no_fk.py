@@ -9,11 +9,10 @@ someone might want to not use foreign keys:
 """
 
 from datetime import datetime
-from app.types.jwt import Role
 from sqlalchemy.sql import func
 from app.db.connection import MySQLTableBase
+from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy import String, Boolean, DateTime
-from sqlalchemy.dialects.mysql import BIGINT, TINYINT
 from sqlalchemy.orm import relationship, Session, mapped_column, Mapped
 
 # TODO: CHECK IF THESE RELATIONSHIPS LOAD LAZILY OR EAGERLY
@@ -37,8 +36,6 @@ class User(MySQLTableBase):
                                                  onupdate=func.now())
     joinDate: Mapped[datetime] = mapped_column(DateTime,
                                                server_default=func.now())
-    role: Mapped[int] = mapped_column(TINYINT(unsigned=True),
-                                      default=Role.USER.value)
     isBetaUser: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Relationships

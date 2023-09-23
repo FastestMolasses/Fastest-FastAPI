@@ -1,7 +1,7 @@
 from alembic import context
 from sqlalchemy import pool
 from app.core.config import settings
-from picologging.config import fileConfig
+from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from app.db.connection import MySQLTableBase
 

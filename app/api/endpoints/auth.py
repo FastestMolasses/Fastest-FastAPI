@@ -5,10 +5,10 @@ from fastapi.responses import ORJSONResponse
 from app.models.mysql import User
 from app.core.config import settings
 from app.db.connection import MySqlSession
-from app.auth.jwt import RequireRefreshToken, RequireRole, create_jwt
+from app.auth.jwt import RequireRefreshToken, RequireJWT, create_jwt
 
+from app.types.jwt import TokenData, JWTPayload
 from app.types.server import ServerResponse, Cookie
-from app.types.jwt import TokenData, Role, JWTPayload
 
 router = APIRouter(prefix='/auth')
 
@@ -43,7 +43,7 @@ async def refresh(response: ORJSONResponse,
 
     try:
         accessToken, refreshToken = create_jwt(
-            token, userRole=payload.role, userID=payload.id)
+            token, userID=payload.id)
     except JWTError as e:
         return ServerResponse(status='error', message=f'JWT Error: {e}')
 
@@ -59,6 +59,7 @@ async def refresh(response: ORJSONResponse,
 
 
 @router.get('/decodeToken')
-async def decodeToken(user: User = Depends(RequireRole(Role.USER))):
+async def decodeToken(user: User = Depends(RequireJWT())):
     with MySqlSession() as session:
-        return user.load(session)
+        user = session.query(User).filter_by(id=user.id).one()
+        return ServerResponse(data=user.__dict__)
