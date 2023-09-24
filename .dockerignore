@@ -45,7 +45,6 @@ CONTRIBUTING.md
 
 # Documentation and license files
 README.md
-LICENSE
 
 # Docker Compose file (if not needed in build context)
 docker-compose.yml
