@@ -56,10 +56,9 @@ RUN poetry install
 WORKDIR /app
 COPY . .
 
-EXPOSE 5000
-ENTRYPOINT /docker-entrypoint.sh $0 $@
-# TODO: SETTING PORT HERE DOESNT ACTUALLY CHANGE IT
-CMD ["uvicorn", "--reload", "--HOST=0.0.0.0", "--PORT=5000", "main:server"]
+# Needs to be consistent with gunicorn_conf.py
+EXPOSE 8000
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 # 'production' stage uses the clean 'python-base' stage and copyies
 # in only our runtime deps that were installed in the 'builder-base'
@@ -83,6 +82,5 @@ RUN groupadd -g 1500 poetry && \
 COPY --chown=poetry:poetry ./app /app
 USER poetry
 
-ENTRYPOINT /docker-entrypoint.sh $0 $@
-RUN ls
-CMD ["gunicorn", "--worker-class uvicorn.workers.UvicornWorker", "--config /gunicorn_conf.py", "main:server"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["gunicorn", "--worker-class", "uvicorn.workers.UvicornWorker", "--config", "/gunicorn_conf.py", "main:server"]

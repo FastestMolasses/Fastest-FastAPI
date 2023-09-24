@@ -2,10 +2,10 @@
 
 set -e
 
-# activate our virtual environment here
+# Activate virtual environment
 . /opt/pysetup/.venv/bin/activate
 
 # You can put other setup logic here
 
-# Evaluating passed command:
+# Execute passed in command
 exec "$@"

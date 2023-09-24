@@ -6,8 +6,8 @@ import multiprocessing
 
 workers_per_core_str = os.getenv('WORKERS_PER_CORE', '1')
 web_concurrency_str = os.getenv('WEB_CONCURRENCY', None)
-host = os.getenv('HOST', '0.0.0.0')
-port = os.getenv('PORT', '8000')
+host = '0.0.0.0'
+port = '8000'
 bind_env = os.getenv('BIND', None)
 use_loglevel = os.getenv('LOG_LEVEL', 'info')
 if bind_env:
