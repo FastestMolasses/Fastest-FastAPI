@@ -66,6 +66,12 @@
 
     Pip
     ```bash
+    python -m venv env
+
+    # Enter environment
+    source env/bin/activate # macOS
+    .\env\Scripts\activate.ps1 # windows (powershell)
+
     pip install -r requirements.txt
     ```
 
@@ -78,7 +84,8 @@
 
     # windows (powershell)
     & ((poetry env info --path) + "\Scripts\activate.ps1")
-
+    ```
+    ```bash
     # Alternatively, you can use this command
     poetry shell
     ```
