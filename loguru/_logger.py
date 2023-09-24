@@ -85,7 +85,6 @@
 import builtins
 import contextlib
 import functools
-import itertools
 import picologging as logging
 import re
 import sys
@@ -109,11 +108,7 @@ from ._handler import Handler
 from ._locks_machinery import create_logger_lock
 from ._recattrs import RecordException, RecordFile, RecordLevel, RecordProcess, RecordThread
 from ._simple_sinks import AsyncSink, CallableSink, StandardSink, StreamSink
-
-if sys.version_info >= (3, 6):
-    from os import PathLike
-else:
-    from pathlib import PurePath as PathLike
+from os import PathLike
 
 
 Level = namedtuple("Level", ["name", "no", "color", "icon"])
@@ -182,7 +177,7 @@ class Core:
             name: (name, name, level.no, level.icon) for name, level in self.levels.items()
         }
 
-        self.handlers_count = itertools.count()
+        self.handlers_count = 0
         self.handlers = {}
 
         self.extra = {}
@@ -763,7 +758,7 @@ class Logger:
         ...
         >>> logger.add(publish, serialize=True)
 
-        >>> from picologging import StreamHandler
+        >>> from logging import StreamHandler
         >>> logger.add(StreamHandler(sys.stderr), format="{message}")
 
         >>> class RandomStream:
@@ -778,7 +773,8 @@ class Logger:
         >>> logger.add(stream_object, level="INFO")
         """
         with self._core.lock:
-            handler_id = next(self._core.handlers_count)
+            handler_id = self._core.handlers_count
+            self._core.handlers_count += 1
 
         error_interceptor = ErrorInterceptor(catch, handler_id)
 
@@ -894,7 +890,7 @@ class Logger:
                         raise ValueError(
                             "The filter dict contains a module '%s' associated to a level name "
                             "which does not exist: '%s'" % (module, level_)
-                        )
+                        ) from None
                 elif isinstance(level_, int):
                     levelno_ = level_
                 else:
@@ -967,9 +963,9 @@ class Logger:
         if not isinstance(encoding, str):
             encoding = "ascii"
 
-        if context is None or isinstance(context, str):
+        if isinstance(context, str):
             context = get_context(context)
-        elif not isinstance(context, BaseContext):
+        elif context is not None and not isinstance(context, BaseContext):
             raise TypeError(
                 "Invalid context, it should be a string or a multiprocessing context, "
                 "not: '%s'" % type(context).__name__
@@ -1109,20 +1105,18 @@ class Logger:
         >>> process.join()
         Message sent from the child
         """
+        tasks = []
 
         with self._core.lock:
             handlers = self._core.handlers.copy()
             for handler in handlers.values():
                 handler.complete_queue()
-
-        logger = self
+                tasks.extend(handler.tasks_to_complete())
 
         class AwaitableCompleter:
             def __await__(self):
-                with logger._core.lock:
-                    handlers = logger._core.handlers.copy()
-                    for handler in handlers.values():
-                        yield from handler.complete_async().__await__()
+                for task in tasks:
+                    yield from task.__await__()
 
         return AwaitableCompleter()
 
@@ -1378,6 +1372,7 @@ class Logger:
             warnings.warn(
                 "The 'ansi' parameter is deprecated, please use 'colors' instead",
                 DeprecationWarning,
+                stacklevel=2,
             )
 
         args = self._options[-2:]
@@ -2079,7 +2074,9 @@ class Logger:
           confusing name.
         """
         warnings.warn(
-            "The 'start()' method is deprecated, please use 'add()' instead", DeprecationWarning
+            "The 'start()' method is deprecated, please use 'add()' instead",
+            DeprecationWarning,
+            stacklevel=2,
         )
         return self.add(*args, **kwargs)
 
@@ -2093,6 +2090,8 @@ class Logger:
           confusing name.
         """
         warnings.warn(
-            "The 'stop()' method is deprecated, please use 'remove()' instead", DeprecationWarning
+            "The 'stop()' method is deprecated, please use 'remove()' instead",
+            DeprecationWarning,
+            stacklevel=2,
         )
         return self.remove(*args, **kwargs)
