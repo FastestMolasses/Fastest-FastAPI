@@ -38,6 +38,8 @@
 
 * [Requirements](#requirements)
 * [Installation](#installation)
+* [Environment Specific Configuration](#environment-specific-configuration)
+* [Upgrading Dependencies](#upgrading-dependencies)
 * [Databases](#databases)
     * [Shell](#shell)
     * [Migrations](#migrations)
@@ -119,15 +121,22 @@
 
 7. Run the server
 
-    For development. Will use (.env.dev)
     ```bash
     uvicorn main:server --reload
     ```
 
-    For testing production .env locally. Will use (.env)
-    ```
-    PROD=1 uvicorn main:server --reload
-    ```
+## Environment Specific Configuration
+This project uses environment-specific configuration files and symbolic links to manage different environments such as development, production, and staging. Follow the steps below for your operating system to set up the desired environment.
+
+```bash
+# macOS, linux
+ln -s <TARGET>.env .env
+# example: ln -s prod.env .env
+
+# windows
+mklink .env <TARGET>.env
+# example: mklink .env prod.env
+```
 
 ## Upgrading Dependencies
 
@@ -144,19 +153,6 @@ poetry up
 ```
 
 [More info](https://github.com/MousaZeidBaker/poetry-plugin-up)
-
-## Setting Up the Environment
-This project uses environment-specific configuration files and symbolic links to manage different environments such as development, production, and staging. Follow the steps below for your operating system to set up the desired environment.
-
-```bash
-# macOS, linux
-ln -s <TARGET>.env .env
-# example: ln -s prod.env .env
-
-# windows
-mklink .env <TARGET>.env
-# example: mklink .env prod.env
-```
 
 ## Databases
 
@@ -217,11 +213,12 @@ alembic downgrade base
 📄 main.py                  - Server entry point
 📁 .github/                 - Github specific files
 📁 app/                     - Application code
-   ├── 📁 api               - API endpoints
+   ├── 📁 api               - API endpoints and middleware
    ├── 📁 auth              - Authentication / authorization
    ├── 📁 cache             - Redis code and caching functions
    ├── 📁 core              - Core configuration
    ├── 📁 db                - Database connections
+   ├── 📁 discord           - Discord library for auth (optional)
    ├── 📁 lmbd              - Holds AWS lambda functions
    ├── 📁 migrations        - Database migrations
    ├── 📁 models            - Database ORM models
