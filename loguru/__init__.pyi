@@ -87,7 +87,6 @@ It helps to catch several possible runtime errors by performing additional check
 For more details, go to official |documentation of loguru-mypy|_.
 """
 
-import sys
 from asyncio import AbstractEventLoop
 from datetime import datetime, time, timedelta
 from picologging import Handler
