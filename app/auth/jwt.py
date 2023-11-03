@@ -21,17 +21,15 @@ def create_jwt(data: TokenData,
                session: Session | None = None,
                userID: int | None = None) -> tuple[str, str]:
     """
-        Create a JWT token that expires in 30 min. If a user role is provided, the token will be
-        created with that role. Otherwise, the user's role will be queried from the database if
-        the session is provided. If the user does not exist in the database, a new user will be
-        created.
+        Create a JWT token that expires in 30 min. If the user does not exist
+        in the database, a new user will be created.
 
         Raises:
             JWTError: If there is an error encoding the claims.
     """
     # If no user info was provided, we need to query it
     if session and userID is None:
-        # Query the database to get the user's role. Create a new user if needed.
+        # Query the database to get the user object. Create a new user if needed.
         user: User | None = session.query(
             User).filter_by(address=data.sub).first()
         if not user:
