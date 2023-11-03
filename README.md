@@ -159,6 +159,12 @@ Then you can update the latest versions of the dependencies by running this comm
 poetry up
 ```
 
+You can update dev dependencies by running this command. You can modify this to update other groups as well.
+
+```bash
+poetry up --only=dev --latest
+```
+
 [More info](https://github.com/MousaZeidBaker/poetry-plugin-up)
 
 ## Databases

@@ -28,7 +28,7 @@ jobs:
 
     - name: Linting code
       run: |
-        ruff .
+        ruff check .
 
   type-check:
     runs-on: ubuntu-latest
