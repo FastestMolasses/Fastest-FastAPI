@@ -1,6 +1,6 @@
 from typing import Any
 from pydantic_settings import BaseSettings
-from pydantic import AnyHttpUrl, validator, Extra
+from pydantic import AnyHttpUrl, validator
 
 
 class EnvConfigSettings(BaseSettings):
@@ -48,7 +48,7 @@ class EnvConfigSettings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = '.env'
-        extra = Extra.ignore
+        extra = 'ignore'
 
 
 settings = EnvConfigSettings(**{})
