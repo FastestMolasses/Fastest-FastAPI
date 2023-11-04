@@ -14,12 +14,34 @@ from app.types.server import ServerResponse, Cookie
 router = APIRouter(prefix='/auth')
 
 
+@router.get('/signup')
+async def signup() -> ServerResponse[str]:
+    """
+        Example route to create a user.
+    """
+    with MySqlSession() as session:
+        user = User()
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+
+    return ServerResponse()
+
+
 @router.get('/login')
 async def login(response: ORJSONResponse) -> ServerResponse[str]:
-    # TODO: Look up the user here, or create one if they don't exist
-    # session = MySqlSession()
-    token = TokenData(sub='example_user_id')
+    """
+        Example route to login a user. Will just grab the first user from the database
+        and create a JWT for them.
+    """
+    # Grab the first user from the database
+    with MySqlSession() as session:
+        user = session.query(User).first()
 
+    if not user:
+        return ServerResponse(status='error', message='No user found')
+
+    token = TokenData(sub=str(user.id))
     try:
         accessToken, refreshToken = create_jwt(token)
     except JWTError as e:
@@ -41,6 +63,9 @@ async def login(response: ORJSONResponse) -> ServerResponse[str]:
 async def refresh(
     response: ORJSONResponse, payload: JWTPayload = Depends(RequireRefreshToken)
 ) -> ServerResponse[str]:
+    """
+        Example route to refresh a JWT.
+    """
     token = TokenData(sub=payload.sub)
 
     try:
@@ -62,6 +87,10 @@ async def refresh(
 
 @router.get('/decodeToken')
 async def decodeToken(user: User = Depends(RequireJWT())):
+    """
+        Example route to decode a JWT. Will return the user object from the database
+        that is associated with the JWT.
+    """
     with MySqlSession() as session:
         user = session.query(User).filter_by(id=user.id).one()
         return ServerResponse(data=user.__dict__)
