@@ -6,6 +6,7 @@ import app.api.middleware as middleware
 from fastapi import FastAPI
 from app.api.router import apiRouter
 from app.core.config import settings
+from app.log.setup import setup_logging
 from app.types.server import ServerResponse
 from fastapi.responses import ORJSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -18,6 +19,8 @@ server = FastAPI(
     default_response_class=ORJSONResponse,
 )
 server.include_router(apiRouter, prefix=settings.API_V1_STR)
+
+setup_logging()
 
 # Prometheus metrics
 Instrumentator(

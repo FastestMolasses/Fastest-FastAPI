@@ -1,3 +1,4 @@
+from loguru import logger
 from typing import Callable
 from fastapi import Request
 # from pyinstrument import Profiler
@@ -18,15 +19,18 @@ class DBExceptionsMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
 
-        except NoResultFound:
+        except NoResultFound as e:
+            logger.exception(f'NoResultFound: {e}')
             response = ServerResponse(status='error', message='Row not found')
 
-        except MultipleResultsFound:
+        except MultipleResultsFound as e:
+            logger.exception(f'MultipleResultsFound: {e}')
             response = ServerResponse(
                 status='error', message='Multiple rows found')
 
         except IntegrityError as e:
             e.hide_parameters = True
+            logger.exception(f'IntegrityError: {e}')
             response = ServerResponse(
                 status='error', message=str(e))
 
@@ -44,6 +48,7 @@ class CatchAllMiddleware(BaseHTTPMiddleware):
 
         except Exception as e:
             # TODO: SEND NOTIFICATION HERE
+            logger.exception(e)
             response = ServerResponse(
                 status='error', message=str(e))
             return ORJSONResponse(response.dict(), status_code=400)
