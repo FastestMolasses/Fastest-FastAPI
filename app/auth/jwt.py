@@ -72,23 +72,13 @@ class RequireJWT(HTTPBearer):
 
     async def __call__(self, request: Request):
         credentials = await super(RequireJWT, self).__call__(request)
-        refreshToken = request.cookies.get(Cookie.REFRESH_TOKEN, '')
 
         if credentials and credentials.credentials:
             payload = verify_token(credentials.credentials)
-            refreshTokenPayload = verify_token(refreshToken)
-
-            print(payload)
-            print(refreshTokenPayload)
-
-            # Check if payloads are valid
-            if not (payload and refreshTokenPayload):
+            if not payload:
                 raise HTTPException(status_code=403, detail='Invalid token or expired token.')
 
-            # If using nonce, check nonce
-            if not validate_nonce(payload, refreshTokenPayload):
-                raise HTTPException(status_code=403, detail='Nonce validation failed.')
-
+            validate_nonce(payload)
             return payload
         else:
             raise HTTPException(status_code=403, detail='Invalid authorization code.')
@@ -96,17 +86,12 @@ class RequireJWT(HTTPBearer):
 
 def RequireRefreshToken(request: Request) -> JWTPayload:
     refreshToken = request.cookies.get(Cookie.REFRESH_TOKEN, '')
-    refreshTokenPayload = verify_token(refreshToken)
-    if not refreshTokenPayload:
+    payload = verify_token(refreshToken)
+    if not payload:
         raise HTTPException(status_code=403, detail='Invalid token or expired token.')
 
-    # If using nonce, ensure it's in the cache
-    if settings.JWT_USE_NONCE and not is_nonce_in_cache(
-        refreshTokenPayload.sub, refreshTokenPayload.nonce
-    ):
-        raise HTTPException(status_code=403, detail='Invalid token or expired token.')
-
-    return refreshTokenPayload
+    validate_nonce(payload)
+    return payload
 
 
 def create_token(data: TokenData, nonce: str | None, expire_minutes: int) -> str:
@@ -120,16 +105,6 @@ def create_token(data: TokenData, nonce: str | None, expire_minutes: int) -> str
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=ALGORITHM)
 
 
-def validate_nonce(payload: JWTPayload, refreshTokenPayload: JWTPayload) -> bool:
-    if not settings.JWT_USE_NONCE:
-        return True
-    if payload.nonce != refreshTokenPayload.nonce:
-        raise HTTPException(status_code=403, detail='Nonce mismatch.')
-    if not is_nonce_in_cache(refreshTokenPayload.sub, refreshTokenPayload.nonce):
-        raise HTTPException(status_code=403, detail='Invalid token or expired token.')
-    return True
-
-
 def set_nonce_in_cache(user_id: str, nonce: str, expiration_time: int):
     """
     Store nonce in cache with a specified expiration time.
@@ -137,6 +112,13 @@ def set_nonce_in_cache(user_id: str, nonce: str, expiration_time: int):
     if settings.JWT_USE_NONCE:
         cache = SessionStore(RedisTokenPrefix.USER, user_id, ttl=expiration_time)
         cache.set(UserKey.NONCE, nonce)
+
+
+def validate_nonce(payload: JWTPayload):
+    if not settings.JWT_USE_NONCE:
+        return
+    if not is_nonce_in_cache(payload.sub, payload.nonce):
+        raise HTTPException(status_code=403, detail='Invalid authorization code.')
 
 
 def is_nonce_in_cache(user_id: str, nonce: str | None) -> bool:
