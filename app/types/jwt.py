@@ -13,9 +13,7 @@ class JWTPayload(BaseModel):
     # Issued at
     iat: datetime
     # Unique hex number
-    nonce: str
-    # User ID
-    id: int
+    nonce: str | None = None
 
 
 class TokenData(BaseModel):

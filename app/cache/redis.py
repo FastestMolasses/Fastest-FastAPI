@@ -9,18 +9,22 @@ class SessionStore:
     @classmethod
     def get_pool(cls):
         if cls._pool is None:
-            cls._pool = redis.ConnectionPool(host=settings.REDIS_HOST,
-                                             port=settings.REDIS_PORT,
-                                             password=settings.REDIS_PASSWORD,
-                                             connection_class=redis.SSLConnection)
+            cls._pool = redis.ConnectionPool(
+                host=settings.REDIS_HOST,
+                port=settings.REDIS_PORT,
+                password=settings.REDIS_PASSWORD,
+                connection_class=redis.SSLConnection,
+            )
         return cls._pool
 
-    def __init__(self, token: str, ttl: int = (60 * 60 * 4)):
+    def __init__(self, *tokens: str, ttl: int = (60 * 60 * 4)):
         """
-        :param token: Used to create a session in redis. Key/value pairs are unique to this token.
-        :param ttl: Time to live in seconds. Defaults to 4 hours.
+        Params:\n
+            tokens - Used to create a session in redis. Key/value pairs are unique to this token.
+            Pass in multiple tokens and they will be joined into one.\n
+            ttl - Time to live in seconds. Defaults to 4 hours.
         """
-        self.token = token
+        self.token = ':'.join(tokens)
         self.redis = redis.StrictRedis(connection_pool=self.get_pool())
         self.ttl = ttl
 

@@ -1,4 +1,5 @@
 from jose import JWTError
+from loguru import logger
 from fastapi import APIRouter, Depends
 from fastapi.responses import ORJSONResponse
 
@@ -14,16 +15,16 @@ router = APIRouter(prefix='/auth')
 
 
 @router.get('/login')
-async def login(address: str, response: ORJSONResponse) -> ServerResponse[str]:
-    session = MySqlSession()
-    token = TokenData(sub=address)
+async def login(response: ORJSONResponse) -> ServerResponse[str]:
+    # TODO: Look up the user here, or create one if they don't exist
+    # session = MySqlSession()
+    token = TokenData(sub='example_user_id')
 
     try:
-        accessToken, refreshToken = create_jwt(token, session)
+        accessToken, refreshToken = create_jwt(token)
     except JWTError as e:
-        return ServerResponse(status='error', message=f'JWT Error: {e}')
-    finally:
-        session.close()
+        logger.error(f'JWT Error during login: {e}')
+        return ServerResponse(status='error', message='JWT Error, try again')
 
     # Save the refresh token in an HTTPOnly cookie
     response.set_cookie(
@@ -37,15 +38,16 @@ async def login(address: str, response: ORJSONResponse) -> ServerResponse[str]:
 
 
 @router.get('/refresh')
-async def refresh(response: ORJSONResponse,
-                  payload: JWTPayload = Depends(RequireRefreshToken)) -> ServerResponse[str]:
+async def refresh(
+    response: ORJSONResponse, payload: JWTPayload = Depends(RequireRefreshToken)
+) -> ServerResponse[str]:
     token = TokenData(sub=payload.sub)
 
     try:
-        accessToken, refreshToken = create_jwt(
-            token, userID=payload.id)
+        accessToken, refreshToken = create_jwt(token)
     except JWTError as e:
-        return ServerResponse(status='error', message=f'JWT Error: {e}')
+        logger.error(f'JWT Error during login: {e}')
+        return ServerResponse(status='error', message='JWT Error, try again.')
 
     # Save the refresh token in an HTTPOnly cookie
     response.set_cookie(

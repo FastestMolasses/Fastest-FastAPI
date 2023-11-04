@@ -27,7 +27,7 @@
 * 📝 [Loguru](https://github.com/Delgan/loguru) + [picologging](https://github.com/microsoft/picologging) for simplified and performant logging
 * 🐳 Dockerized and includes AWS deployment flow
 * 🗃️ Several database implementations with sample ORM models (MySQL, Postgres, Timescale) & migrations
-* 🔐 JWT authentication and authorization
+* 🔐 Optional JWT authentication and authorization
 * 🌐 AWS Lambda functions support
 * 🧩 Modularized features
 * 📊 Prometheus metrics
@@ -44,6 +44,9 @@
     * [Shell](#shell)
     * [Migrations](#migrations)
     * [Downgrade Migration](#downgrade-migration)
+* [JWT Auth](#jwt-auth)
+    * [JWT Overview](#jwt-overview)
+    * [Modifying JWT Payload Fields](#modifying-jwt-payload-fields)
 * [Project Structure](#project-structure)
 * [Makefile Commands](#makefile-commands)
 * [Contributing](#contributing)
@@ -219,6 +222,65 @@ Run this command to revert every migration back to the beginning.
 ```bash
 alembic downgrade base
 ```
+
+## JWT Implementation
+
+In this FastAPI template, JSON Web Tokens (JWT) can be optionally utilized for authentication. This documentation section elucidates the JWT implementation and related functionalities.
+
+### JWT Overview
+
+The JWT implementation can be found in the module: app/auth/jwt.py. The primary functions include:
+
+- Creating access and refresh JWT tokens.
+- Verifying and decoding a given JWT token.
+- Handling JWT-based authentication for FastAPI routes.
+
+#### User Management
+
+If a user associated with a JWT token is not found in the database, a new user will be created. This is managed by the get_or_create_user function. When a token is decoded and the corresponding user ID (sub field in the token) is not found, the system will attempt to create a new user with that ID.
+
+#### Nonce Usage
+
+A nonce is an arbitrary number that can be used just once. It's an optional field in the JWT token to ensure additional security. If a nonce is used:
+
+- It is stored in Redis for the duration of the refresh token's validity.
+- It must match between access and refresh tokens to ensure their pairing.
+- Its presence in Redis is verified before the token is considered valid.
+
+Enabling nonce usage provides an additional layer of security against token reuse, but requires Redis to function.
+
+### Modifying JWT Payload Fields
+
+The JWT token payload structure is defined in `app/types/jwt.py`` under the JWTPayload class. If you wish to add more fields to the JWT token payload:
+
+1. Update the TokenData and JWTPayload class in `app/types/jwt.py`` by adding the desired fields.
+    ```python
+    class JWTPayload(BaseModel):
+        # ... existing fields ...
+        new_field: Type
+
+    class TokenData(BaseModel):
+        # ... existing fields ...
+        new_field: Type
+    ```
+
+    TokenData is separated from JWTPayload to make it clear what is automatically filled in and what is manually added. Both classes must be updated to include the new fields.
+
+2. Wherever the token is created, update the payload to include the new fields.
+    ```python
+    from app.auth.jwt import create_jwt
+    from app.types.jwt import TokenData
+
+    payload = TokenData(
+        sub='user_id_1',
+        field1='value1',
+        # ... all fields ...
+    )
+    access_token, refresh_token = create_jwt(payload)
+    ```
+
+Remember, the JWT token has a size limit. The more data you include, the bigger your token becomes, so ensure that you only include essential data in the token payload.
+
 
 ## Project Structure
 
