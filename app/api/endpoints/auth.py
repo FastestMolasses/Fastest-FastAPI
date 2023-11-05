@@ -86,11 +86,8 @@ async def refresh(
 
 
 @router.get('/decodeToken')
-async def decodeToken(user: User = Depends(RequireJWT())):
+async def decodeToken(payload: JWTPayload = Depends(RequireJWT())):
     """
-        Example route to decode a JWT. Will return the user object from the database
-        that is associated with the JWT.
+        Example route to decode a JWT.
     """
-    with MySqlSession() as session:
-        user = session.query(User).filter_by(id=user.id).one()
-        return ServerResponse(data=user.__dict__)
+    return ServerResponse[dict](data=payload.model_dump())
