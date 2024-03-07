@@ -45,7 +45,6 @@ server.add_middleware(middleware.DBExceptionsMiddleware)
 server.add_middleware(middleware.CatchAllMiddleware)
 server.add_middleware(middleware.ProfilingMiddleware)
 
-
 @server.get('/')
 async def root() -> ServerResponse:
     return ServerResponse()
