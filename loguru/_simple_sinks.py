@@ -1,6 +1,6 @@
 import asyncio
-import weakref
 import picologging as logging
+import weakref
 
 from ._asyncio_loop import get_running_loop, get_task_loop
 

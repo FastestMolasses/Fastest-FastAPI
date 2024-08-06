@@ -87,6 +87,7 @@ It helps to catch several possible runtime errors by performing additional check
 For more details, go to official |documentation of loguru-mypy|_.
 """
 
+import sys
 from asyncio import AbstractEventLoop
 from datetime import datetime, time, timedelta
 from picologging import Handler
@@ -113,9 +114,25 @@ from typing import (
     overload,
 )
 
-from typing import Awaitable, Protocol, TypedDict, ContextManager
-from os import PathLike
-PathLikeStr = PathLike[str]
+if sys.version_info >= (3, 5, 3):
+    from typing import Awaitable
+else:
+    from typing_extensions import Awaitable
+
+if sys.version_info >= (3, 6):
+    from os import PathLike
+    from typing import ContextManager
+
+    PathLikeStr = PathLike[str]
+else:
+    from pathlib import PurePath as PathLikeStr
+
+    from typing_extensions import ContextManager
+
+if sys.version_info >= (3, 8):
+    from typing import Protocol, TypedDict
+else:
+    from typing_extensions import Protocol, TypedDict
 
 _T = TypeVar("_T")
 _F = TypeVar("_F", bound=Callable[..., Any])
@@ -278,7 +295,7 @@ class Logger:
     def remove(self, handler_id: Optional[int] = ...) -> None: ...
     def complete(self) -> AwaitableCompleter: ...
     @overload
-    def catch(  # type: ignore[misc]
+    def catch(
         self,
         exception: Union[Type[BaseException], Tuple[Type[BaseException], ...]] = ...,
         *,
@@ -290,7 +307,7 @@ class Logger:
         message: str = ...
     ) -> Catcher: ...
     @overload
-    def catch(self, exception: _F) -> _F: ...
+    def catch(self, function: _F) -> _F: ...
     def opt(
         self,
         *,

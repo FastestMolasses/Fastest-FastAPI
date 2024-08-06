@@ -82,6 +82,7 @@
 .. _formatting directives: https://docs.python.org/3/library/string.html#format-string-syntax
 .. _reentrant: https://en.wikipedia.org/wiki/Reentrancy_(computing)
 """
+
 import builtins
 import contextlib
 import functools
@@ -108,7 +109,11 @@ from ._handler import Handler
 from ._locks_machinery import create_logger_lock
 from ._recattrs import RecordException, RecordFile, RecordLevel, RecordProcess, RecordThread
 from ._simple_sinks import AsyncSink, CallableSink, StandardSink, StreamSink
-from os import PathLike
+
+if sys.version_info >= (3, 6):
+    from os import PathLike
+else:
+    from pathlib import PurePath as PathLike
 
 
 Level = namedtuple("Level", ["name", "no", "color", "icon"])
@@ -1221,7 +1226,7 @@ class Logger:
 
             def __exit__(self, type_, value, traceback_):
                 if type_ is None:
-                    return
+                    return None
 
                 if not issubclass(type_, exception):
                     return False
@@ -1578,8 +1583,7 @@ class Logger:
                     "Level '%s' does not exist, you have to create it by specifying a level no"
                     % name
                 )
-            else:
-                old_color, old_icon = "", " "
+            old_color, old_icon = "", " "
         elif no is not None:
             raise TypeError("Level '%s' already exists, you can't update its severity no" % name)
         else:
@@ -1838,11 +1842,18 @@ class Logger:
         ...         print(log["date"], log["something_else"])
         """
         if isinstance(file, (str, PathLike)):
-            should_close = True
-            fileobj = open(str(file))
+
+            @contextlib.contextmanager
+            def opener():
+                with open(str(file)) as fileobj:
+                    yield fileobj
+
         elif hasattr(file, "read") and callable(file.read):
-            should_close = False
-            fileobj = file
+
+            @contextlib.contextmanager
+            def opener():
+                yield file
+
         else:
             raise TypeError(
                 "Invalid file, it should be a string path or a file object, not: '%s'"
@@ -1871,21 +1882,19 @@ class Logger:
                 % type(pattern).__name__
             ) from None
 
-        matches = Logger._find_iter(fileobj, regex, chunk)
+        with opener() as fileobj:
+            matches = Logger._find_iter(fileobj, regex, chunk)
 
-        for match in matches:
-            groups = match.groupdict()
-            cast_function(groups)
-            yield groups
-
-        if should_close:
-            fileobj.close()
+            for match in matches:
+                groups = match.groupdict()
+                cast_function(groups)
+                yield groups
 
     @staticmethod
     def _find_iter(fileobj, regex, chunk):
         buffer = fileobj.read(0)
 
-        while 1:
+        while True:
             text = fileobj.read(chunk)
             buffer += text
             matches = list(regex.finditer(buffer))

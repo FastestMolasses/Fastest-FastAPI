@@ -10,9 +10,23 @@ import sysconfig
 import tokenize
 import traceback
 
+if sys.version_info >= (3, 11):
 
-def is_exception_group(exc):
-    return isinstance(exc, ExceptionGroup)
+    def is_exception_group(exc):
+        return isinstance(exc, ExceptionGroup)
+
+else:
+    try:
+        from exceptiongroup import ExceptionGroup
+    except ImportError:
+
+        def is_exception_group(exc):
+            return False
+
+    else:
+
+        def is_exception_group(exc):
+            return isinstance(exc, ExceptionGroup)
 
 
 class SyntaxHighlighter:
@@ -31,7 +45,7 @@ class SyntaxHighlighter:
 
     _builtins = set(dir(builtins))
     _constants = {"True", "False", "None"}
-    _punctation = {"(", ")", "[", "]", "{", "}", ":", ",", ";"}
+    _punctuation = {"(", ")", "[", "]", "{", "}", ":", ",", ";"}
     _strings = {tokenize.STRING}
     _fstring_middle = None
 
@@ -65,7 +79,7 @@ class SyntaxHighlighter:
                 else:
                     color = style["identifier"]
             elif type_ == tokenize.OP:
-                if string in self._punctation:
+                if string in self._punctuation:
                     color = style["punctuation"]
                 else:
                     color = style["operator"]
@@ -441,31 +455,31 @@ class ExceptionFormatter:
         # on the indentation; the preliminary context for "SyntaxError" is always indented, while
         # the Exception itself is not. This allows us to identify the correct index for the
         # exception message.
-        error_message_index = 0
-        for error_message_index, part in enumerate(exception_only):  # noqa: B007
-            if not part.startswith(" "):
-                break
+        no_indented_indexes = (i for i, p in enumerate(exception_only) if not p.startswith(" "))
+        error_message_index = next(no_indented_indexes, None)
 
-        error_message = exception_only[error_message_index][:-1]  # Remove last new line temporarily
+        if error_message_index is not None:
+            # Remove final new line temporarily.
+            error_message = exception_only[error_message_index][:-1]
 
-        if self._colorize:
-            if ":" in error_message:
-                exception_type, exception_value = error_message.split(":", 1)
-                exception_type = self._theme["exception_type"].format(exception_type)
-                exception_value = self._theme["exception_value"].format(exception_value)
-                error_message = exception_type + ":" + exception_value
-            else:
-                error_message = self._theme["exception_type"].format(error_message)
+            if self._colorize:
+                if ":" in error_message:
+                    exception_type, exception_value = error_message.split(":", 1)
+                    exception_type = self._theme["exception_type"].format(exception_type)
+                    exception_value = self._theme["exception_value"].format(exception_value)
+                    error_message = exception_type + ":" + exception_value
+                else:
+                    error_message = self._theme["exception_type"].format(error_message)
 
-        if self._diagnose and frames:
-            if issubclass(exc_type, AssertionError) and not str(exc_value) and final_source:
-                if self._colorize:
-                    final_source = self._syntax_highlighter.highlight(final_source)
-                error_message += ": " + final_source
+            if self._diagnose and frames:
+                if issubclass(exc_type, AssertionError) and not str(exc_value) and final_source:
+                    if self._colorize:
+                        final_source = self._syntax_highlighter.highlight(final_source)
+                    error_message += ": " + final_source
 
-            error_message = "\n" + error_message
+                error_message = "\n" + error_message
 
-        exception_only[error_message_index] = error_message + "\n"
+            exception_only[error_message_index] = error_message + "\n"
 
         if is_first:
             yield self._prefix
@@ -484,7 +498,7 @@ class ExceptionFormatter:
             else:
                 yield from self._indent(introduction + "\n", group_nesting)
 
-        frames_lines = traceback.format_list(frames) + exception_only
+        frames_lines = self._format_list(frames) + exception_only
         if self._colorize or self._backtrace or self._diagnose:
             frames_lines = self._format_locations(frames_lines, has_introduction=has_introduction)
 
@@ -511,6 +525,16 @@ class ExceptionFormatter:
                     )
             if not is_exception_group(exc) or group_nesting == 10:
                 yield from self._indent("-" * 35, group_nesting + 1, prefix="+-")
+
+    def _format_list(self, frames):
+        result = []
+        for filename, lineno, name, line in frames:
+            row = []
+            row.append('  File "{}", line {}, in {}\n'.format(filename, lineno, name))
+            if line:
+                row.append("    {}\n".format(line.strip()))
+            result.append("".join(row))
+        return result
 
     def format_exception(self, type_, value, tb, *, from_decorator=False):
         yield from self._format_exception(value, tb, is_first=True, from_decorator=from_decorator)
