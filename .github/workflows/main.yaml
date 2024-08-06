@@ -49,4 +49,4 @@ jobs:
 
     - name: Type checking code
       run: |
-        mypy . --explicit-package-bases
+        mypy . --explicit-package-bases --exclude loguru
