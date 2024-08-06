@@ -64,4 +64,5 @@ test.json
 # Specific includes and excludes
 *.txt
 !requirements.txt
+!dev-requirements.txt
 chromedriver*
