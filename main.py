@@ -1,4 +1,4 @@
-# poetry run uvicorn main:server --reload
+# uvicorn main:server --reload
 import app.models.mysql
 import app.db.connection
 import app.api.middleware as middleware

@@ -3,7 +3,7 @@
 
   <div align="center">
 
-  ![Build](https://github.com/FastestMolasses/Fast-Python-Server-Template/actions/workflows/main.yaml/badge.svg)&nbsp;[![GitHub license](https://badgen.net/github/license/FastestMolasses/Fast-Python-Server-Template)](https://github.com/FastestMolasses/Fast-Python-Server-Template/blob/main/LICENSE)
+![Build](https://github.com/FastestMolasses/Fast-Python-Server-Template/actions/workflows/main.yaml/badge.svg)&nbsp;[![GitHub license](https://badgen.net/github/license/FastestMolasses/Fast-Python-Server-Template)](https://github.com/FastestMolasses/Fast-Python-Server-Template/blob/main/LICENSE)
 
   </div>
 
@@ -21,121 +21,104 @@
 
 ## Features
 
-* ⚡ Async and type safety by default
-* 🛠️ CI/CD and tooling setup
-* 🚀 High performance libraries integrated ([orjson](https://github.com/ijl/orjson), [uvloop](https://github.com/MagicStack/uvloop), [pydantic2](https://github.com/pydantic/pydantic))
-* 📝 [Loguru](https://github.com/Delgan/loguru) + [picologging](https://github.com/microsoft/picologging) for simplified and performant logging
-* 🐳 Dockerized and includes AWS deployment flow
-* 🗃️ Several database implementations with sample ORM models (MySQL, Postgres, Timescale) & migrations
-* 🔐 Optional JWT authentication and authorization
-* 🌐 AWS Lambda functions support
-* 🧩 Modularized features
-* 📊 Prometheus metrics
-* 📜 Makefile commands
-* 🗺️ Route profiling
+-   ⚡ Async and type safety by default
+-   🛠️ CI/CD and tooling setup
+-   🚀 High performance libraries integrated ([orjson](https://github.com/ijl/orjson), [uvloop](https://github.com/MagicStack/uvloop), [pydantic2](https://github.com/pydantic/pydantic))
+-   📝 [Loguru](https://github.com/Delgan/loguru) + [picologging](https://github.com/microsoft/picologging) for simplified and performant logging
+-   🐳 Dockerized and includes AWS deployment flow
+-   🗃️ Several database implementations with sample ORM models (MySQL, Postgres, Timescale) & migrations
+-   🔐 Optional JWT authentication and authorization
+-   🌐 AWS Lambda functions support
+-   🧩 Modularized features
+-   📊 Prometheus metrics
+-   📜 Makefile commands
+-   🗺️ Route profiling
 
 ## Table of Contents
 
-* [Requirements](#requirements)
-* [Installation](#installation)
-* [Environment Specific Configuration](#environment-specific-configuration)
-* [Upgrading Dependencies](#upgrading-dependencies)
-* [Databases](#databases)
-    * [Shell](#shell)
-    * [Migrations](#migrations)
-    * [Downgrade Migration](#downgrade-migration)
-* [JWT Auth](#jwt-auth)
-    * [JWT Overview](#jwt-overview)
-    * [Modifying JWT Payload Fields](#modifying-jwt-payload-fields)
-* [Project Structure](#project-structure)
-* [Makefile Commands](#makefile-commands)
-* [Contributing](#contributing)
+-   [Requirements](#requirements)
+-   [Installation](#installation)
+-   [Environment Specific Configuration](#environment-specific-configuration)
+-   [Upgrading Dependencies](#upgrading-dependencies)
+-   [Databases](#databases)
+    -   [Shell](#shell)
+    -   [Migrations](#migrations)
+    -   [Downgrade Migration](#downgrade-migration)
+-   [JWT Auth](#jwt-auth)
+    -   [JWT Overview](#jwt-overview)
+    -   [Modifying JWT Payload Fields](#modifying-jwt-payload-fields)
+-   [Project Structure](#project-structure)
+-   [Makefile Commands](#makefile-commands)
+-   [Contributing](#contributing)
 
 ## Requirements
 
-* [Python 3.11+](https://www.python.org/downloads/)
-* [Docker](https://www.docker.com/get-started/)
+-   [Python 3.11+](https://www.python.org/downloads/)
+-   [Docker](https://www.docker.com/get-started/)
 
 ## Installation
 
 1. Fork this repo ([How to create a private fork](https://gist.github.com/0xjac/85097472043b697ab57ba1b1c7530274))
 
-2. Install depedenencies
+2. Install UV Package Manager:
+   Follow the installation instructions at https://github.com/astral-sh/uv
 
-    Poetry
+3. Set up the virtual environment and install dependencies:
+
     ```bash
-    poetry install
-    ```
+    uv venv
 
-    Pip
-    ```bash
-    python -m venv env
+    # On macOS and Linux
+    source .venv/bin/activate
 
-    # Enter environment
-    source env/bin/activate # macOS
-    .\env\Scripts\activate.ps1 # windows (powershell)
+    # On Windows
+    .venv\Scripts\activate
 
-    pip install -r requirements.txt
-    ```
+    # Install main dependencies
+    uv pip install -r requirements.txt
 
-3. Enter the environment if you haven't already
-
-    Poetry
-    ```bash
-    # macOS
-    source $(poetry env info --path)/bin/activate
-
-    # windows (powershell)
-    & ((poetry env info --path) + "\Scripts\activate.ps1")
-    ```
-    ```bash
-    # Alternatively, you can use this command
-    poetry shell
-    ```
-
-    Pip
-    ```bash
-    # macOS
-    source env/bin/activate
-
-    # windows (powershell)
-    .\env\Scripts\activate.ps1
+    # Install development dependencies (optional)
+    uv pip install -r dev-requirements.txt
     ```
 
 4. Install [Docker](https://www.docker.com/get-started/)
 
-5. Start your Docker services
+5. Start your Docker services:
 
     ```bash
     docker compose up
     ```
 
-6. Clone `.env.example` to `.env` and update the values
+6. Clone `.env.example` to `.env` and update the values:
 
     ```bash
-    # macOS
+    # macOS and Linux
     cp .env.example .env
 
-    # windows (powershell)
-    copy .env.example .env
+    # Windows (PowerShell)
+    Copy-Item .env.example .env
     ```
 
-    You can use this command to generate secret keys
+    You can use this command to generate secret keys:
+
     ```bash
-    # macOS
+    # macOS and Linux
     openssl rand -hex 128
 
-    # windows (powershell)
+    # Windows (PowerShell)
     $bytes = New-Object byte[] 128; (New-Object Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes); [System.BitConverter]::ToString($bytes) -Replace '-'
     ```
 
-7. Run the server
+7. Run the server:
 
     ```bash
     uvicorn main:server --reload
     ```
 
+Note: If you need to update dependencies, you can modify the `requirements.txt` or `dev-requirements.txt` files directly and then run `uv pip install -r requirements.txt` or `uv pip install -r dev-requirements.txt` respectively.
+
 ## Environment Specific Configuration
+
 This project uses environment-specific configuration files and symbolic links to manage different environments such as development, production, and staging. Follow the steps below for your operating system to set up the desired environment.
 
 ```bash
@@ -147,28 +130,6 @@ ln -s <TARGET>.env .env
 mklink .env <TARGET>.env
 # example: mklink .env prod.env
 ```
-
-## Upgrading Dependencies
-
-Make sure that Poetry has this `poetry-plugin-up` plugin installed.
-
-```bash
-poetry self add poetry-plugin-up
-```
-
-Then you can update the latest versions of the dependencies by running this command.
-
-```bash
-poetry up
-```
-
-You can update dev dependencies by running this command. You can modify this to update other groups as well.
-
-```bash
-poetry up --only=dev --latest
-```
-
-[More info](https://github.com/MousaZeidBaker/poetry-plugin-up)
 
 ## Databases
 
@@ -201,10 +162,10 @@ To do a database migration, follow the steps below.
 
 ⛔️ Autogenerated migrations cannot detect these changes:
 
-- Changes of table name
-- Changes of column name
-- Anonymously named constraints
-- Special SQLAlchemy types such as Enum when generated on a backend which doesn’t support ENUM directly
+-   Changes of table name
+-   Changes of column name
+-   Anonymously named constraints
+-   Special SQLAlchemy types such as Enum when generated on a backend which doesn’t support ENUM directly
 
 [Reference](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect)
 
@@ -231,9 +192,9 @@ In this FastAPI template, JSON Web Tokens (JWT) can be optionally utilized for a
 
 The JWT implementation can be found in the module: app/auth/jwt.py. The primary functions include:
 
-- Creating access and refresh JWT tokens.
-- Verifying and decoding a given JWT token.
-- Handling JWT-based authentication for FastAPI routes.
+-   Creating access and refresh JWT tokens.
+-   Verifying and decoding a given JWT token.
+-   Handling JWT-based authentication for FastAPI routes.
 
 #### User Management
 
@@ -243,9 +204,9 @@ If a user associated with a JWT token is not found in the database, a new user w
 
 A nonce is an arbitrary number that can be used just once. It's an optional field in the JWT token to ensure additional security. If a nonce is used:
 
-- It is stored in Redis for the duration of the refresh token's validity.
-- It must match between access and refresh tokens to ensure their pairing.
-- Its presence in Redis is verified before the token is considered valid.
+-   It is stored in Redis for the duration of the refresh token's validity.
+-   It must match between access and refresh tokens to ensure their pairing.
+-   Its presence in Redis is verified before the token is considered valid.
 
 Enabling nonce usage provides an additional layer of security against token reuse, but requires Redis to function.
 
@@ -254,6 +215,7 @@ Enabling nonce usage provides an additional layer of security against token reus
 The JWT token payload structure is defined in `app/types/jwt.py`` under the JWTPayload class. If you wish to add more fields to the JWT token payload:
 
 1. Update the TokenData and JWTPayload class in `app/types/jwt.py`` by adding the desired fields.
+
     ```python
     class JWTPayload(BaseModel):
         # ... existing fields ...
@@ -267,6 +229,7 @@ The JWT token payload structure is defined in `app/types/jwt.py`` under the JWTP
     TokenData is separated from JWTPayload to make it clear what is automatically filled in and what is manually added. Both classes must be updated to include the new fields.
 
 2. Wherever the token is created, update the payload to include the new fields.
+
     ```python
     from app.auth.jwt import create_jwt
     from app.types.jwt import TokenData
@@ -280,7 +243,6 @@ The JWT token payload structure is defined in `app/types/jwt.py`` under the JWTP
     ```
 
 Remember, the JWT token has a size limit. The more data you include, the bigger your token becomes, so ensure that you only include essential data in the token payload.
-
 
 ## Project Structure
 
